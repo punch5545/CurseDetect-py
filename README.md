@@ -1,17 +1,51 @@
-# 댓글 목록 불러오기
+# 한국어 욕설 감지 프로젝트 CurseDetect-py
+* 한국어 욕설을 감지하는 프로젝트입니다.
+* 개발 진행중인 프로젝트로, 데이터셋과 모델이 포함될 예정입니다.
+* 진행이 완료되는대로 아래 Readme에 설명란이 순차적으로 추가될 예정입니다.
+* Reference Project - [욕설감지기](https://github.com/2runo/Curse-detection),  [TFJS Models - Toxicity](https://github.com/tensorflow/tfjs-models/tree/master/toxicity)
 
-`getDCReplys()` 함수로 DC인사이드 갤러리의 댓글을 불러올 수 있습니다.
+## 목차
+
+* 1. 댓글 목록 불러오기
+* 2. Data labeling
+* 3. 모델 생성하기
+
+## 댓글 목록 불러오기
 
 `getIlbeReplys()` 함수로 일간베스트저장소의 댓글을 불러올 수 있습니다.
-사용 방법은 아래와 같습니다.
 
 ```py
 from parser import Parser
-# 일간베스트저장소 - 일간베스트 게시판의 1~10페이지에 있는 모든 게시물의 댓글리스트를 불러온다.
+
 count = 10
+# 일간베스트저장소 - 일간베스트 게시판의 1~10페이지에 있는 모든 게시물의 댓글리스트를 불러온다.
 Parser().getIlbeReplys(count)
+
 ```
-`ReplyCrawler/dist/{community}-{timestamp}.txt` 파일로 저장됩니다.
+* `dataset/unlabeled/ilbe-{timestamp}.txt` 파일로 저장되며, 파일 저장 시 `개행문자(\r\n)`는 `탭문자(\t)`로 치환됩니다. 
+* `DC인사이드` 커뮤니티의 댓글목록은 Request POST 로 요청해야하며 same-origin 정책때문에 `requests`를 사용할 수 없어 제외하였습니다.
 
-# CurseDetect-py
+## Data labeling
+* 일간베스트에 업로드된 약 8만개의 댓글을 분류했습니다.
+* 각 구분의 기준에 부합하는 경우 `1`, 부합하지 않거나 애매한 경우 `0`으로 분류했습니다.
+* [욕설감지기 데이터셋](https://github.com/2runo/Curse-detection-data)과 같은 기준으로 판단하였으나, 아래 표와 같이 세분화 하였습니다.
 
+### Labeling 기준
+구분|기준
+-|-
+욕설|사회통념상 욕설로 받아들여지는 단어 또는 성적인 단어를 포함하거나 타인에게 모욕적인 언사를 행했을 시
+혐오표현|지역감정을 조장하거나 불쾌감을 주는 단어 또는 사회통념상의 혐오표현 사용시
+젠더|젠더갈등을 조장하는 문장일 경우
+
+### 예시
+댓글|　욕설　|혐오표현|　젠더　
+-|-|-|-
+한남유충새끼 나가죽어|1|1|1
+틀딱들 운전대좀 잡지 마라 제발|0|1|0
+어데 김치녀가 스시녀한테 비비려고 하노?|0|0|1
+40대깨문 대학생 어서오고|0|1|0
+야 이 10버러지 장애인새끼야|1|1|0
+이새끼 담당일찐 어디갔냐? 찐따 관리 못하네|1|1|0
+
+
+## 모델 생성하기

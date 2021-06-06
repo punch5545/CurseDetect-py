@@ -1,0 +1,1 @@
+# CurseDetect-py

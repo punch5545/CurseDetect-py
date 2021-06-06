@@ -27,7 +27,7 @@ class IlbeParser():
             self.postList.extend(posts)
     
     def getReplyFromUrl(self, postNum): # Get reply from post
-        url = str.format("/commentlist/{0}", postNum)
+        url = str.format("/commentlist/{0}", postNum) 
         print (str.format("Getting replys from '/commentlist/{0}'       ", postNum), end="\r")
         bs = self.getBS(url)
         comments = bs.find_all('div', class_='comment-item')
@@ -41,8 +41,23 @@ class IlbeParser():
 class Parser():
     def __init__(self):
         pass
+
+    def getIlbeReplys(self, count):
+        ilbe = IlbeParser()
+        ilbe.getIlbePostsCount(count)
+
+        replys = []
+
+        for post in ilbe.postList:
+            replys.extend(ilbe.getReplyFromUrl(post))
+
+        import datetime
+        f = open(str.format("../dist/ilbe-{0}.txt", datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')), 'w')
+        for reply in replys:
+            f.write(str.format("{0}\n", reply))
+        f.close()
     
-    def GetAllReplys(self):
+    def GetAllReplys(self, count):
         ilbe = IlbeParser()
         ilbe.getIlbePostsCount(100)
 
@@ -52,9 +67,7 @@ class Parser():
             replys.extend(ilbe.getReplyFromUrl(post))
 
         import datetime
-        f = open(str.format("./dist/{0}.txt", datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')), 'w')
+        f = open(str.format("../dist/{0}.txt", datetime.datetime.now().strftime('%Y%m%d%H%M%S%f')), 'w')
         for reply in replys:
             f.write(str.format("{0}\n", reply))
         f.close()
-
-Parser().GetAllReplys()

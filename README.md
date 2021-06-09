@@ -26,7 +26,7 @@ Parser().getIlbeReplys(count)
 * `DC인사이드` 커뮤니티의 댓글목록은 Request POST 로 요청해야하며 same-origin 정책때문에 `requests`를 사용할 수 없어 제외하였습니다.
 
 ## Data labeling
-* 일간베스트에 업로드된 약 8만개의 댓글을 분류했습니다.
+* 일간베스트에 업로드된 약 8만개의 댓글을 분류중입니다. (2,000개 완료.. 진행중)
 * 각 구분의 기준에 부합하는 경우 `1`, 부합하지 않거나 애매한 경우 `0`으로 분류했습니다.
 * [욕설감지기 데이터셋](https://github.com/2runo/Curse-detection-data)과 같은 기준으로 판단하였으나, 아래 표와 같이 세분화 하였습니다.
 
